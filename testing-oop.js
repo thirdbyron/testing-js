@@ -61,20 +61,26 @@ console.log(string.reverse('hallo'))
 class Elem {
   constructor (selector) {
     this.elem = document.querySelector(selector)
-    this.elem.style.width = 200 + 'px';
-    this.elem.style.height = 200 + 'px'
-    this.elem.style.border = '1px solid black'
+    this.widthInput = document.querySelector('#width');
+    this.heightInput = document.querySelector('#height');
+    this.result = document.querySelector('.result');
+    console.log(this.result)
   }
 
-  createElement() {
-    document.querySelector('body').append(this.elem)
+  setResult (result) {
+    console.log(this.result)
+    this.result.textContent = String(result);
+  }
+
+  createElement(parent, width, height, result) {
+    this.elem.style.width = width + 'px';
+    this.elem.style.height = height + 'px';
+    this.elem.style.border = '1px solid black';
+    this.setResult(result);
+    document.querySelector(parent).append(this.elem)
   }
 
 }
-
-const testDiv = new Elem('.test-div');
-console.log(testDiv.elem)
-testDiv.createElement()
 
 class Circle {
   #radius
@@ -101,8 +107,41 @@ class Circle {
   }
 }
 
-const circle = new Circle(15);
 
-console.log(circle.radius = 25)
-console.log(circle.getSquare())
-console.log(circle.getLength())
+class Rectangle { 
+  constructor () {
+    this.width = 40;
+    this.height = 50;
+  }
+
+  getSquare () {
+    return this.width * this.height;
+  }
+}
+
+class RectangleController {
+  constructor (model, view) {
+    this.model = model;
+    this.view = view;
+  }
+
+  init () {
+    this.buttonToCreate = document.querySelector('.create');
+    this.buttonToCreate.addEventListener('click', this.createRectangle.bind(this))
+  }
+  
+  createRectangle () {
+    this.model.width = this.view.widthInput.value; 
+    this.model.height = this.view.heightInput.value; 
+    console.log(this.model.getSquare())
+    this.view.createElement('body', this.model.width, this.model.height, this.model.getSquare())
+  }
+}
+
+const model = new Rectangle();
+
+const view = new Elem('.test-div')
+
+const controller = new RectangleController(model, view);
+
+controller.init();
